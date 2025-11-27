@@ -59,9 +59,7 @@ export default function Header() {
             <li className="nav__item">
               <Link to="/accounts" className="nav__link">My Account</Link>
             </li>
-            <li className="nav__item">
-              <Link to="/compare" className="nav__link">Compare</Link>
-            </li>
+            
             <li className="nav__item">
               <Link to="/wishlist" className="nav__link">Wishlist</Link>
             </li>

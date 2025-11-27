@@ -3,16 +3,17 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 const CartContext = createContext()
 
 export function CartProvider({ children }){
-  const [cartItems, setCartItems] = useState([])
-
-  useEffect(()=>{
+  // Initialize from localStorage synchronously to avoid an effect-order
+  // race where the 'save' effect can overwrite existing data on mount.
+  const [cartItems, setCartItems] = useState(() => {
     try{
       const raw = localStorage.getItem('evara_cart')
-      if(raw) setCartItems(JSON.parse(raw))
+      return raw ? JSON.parse(raw) : []
     }catch(e){
-      console.warn('Failed to load cart from localStorage', e)
+      console.warn('Failed to read cart from localStorage', e)
+      return []
     }
-  }, [])
+  })
 
   useEffect(()=>{
     try{
@@ -28,16 +29,19 @@ export function CartProvider({ children }){
     // build a stable key: prefer explicit id, otherwise name+image
     const key = product.id ? String(product.id) : `${product.name}::${product.image || ''}`
 
-    try{ console.log('CartContext.addToCart called', { key, product }) }catch(e){}
+    console.log('CartContext.addToCart called', { key, product })
 
     setCartItems(prev => {
       const idx = prev.findIndex(i => (i._key || `${i.name}::${i.image||''}`) === key)
       if(idx > -1){
         const copy = [...prev]
         copy[idx].quantity = (copy[idx].quantity || 1) + 1
+        console.log('Item already in cart, increasing quantity', copy)
         return copy
       }
-      return [...prev, { ...product, quantity: 1, _key: key }]
+      const newCart = [...prev, { ...product, quantity: 1, _key: key }]
+      console.log('Item added to cart', newCart)
+      return newCart
     })
   }
 

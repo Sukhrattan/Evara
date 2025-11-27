@@ -1,7 +1,13 @@
 import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { useProduct } from '../context/ProductContext'
 
 export default function Home(){
+  const navigate = useNavigate()
+  const { addToCart } = useCart()
+  const { setSelectedProduct } = useProduct()
+
   const handleQuickView = (e, product) => {
     e.preventDefault();
     console.log('Quick view', product);
@@ -16,7 +22,6 @@ export default function Home(){
     e.preventDefault();
     console.log('Add to compare', product);
   }
-  const { addToCart } = useCart()
 
   useEffect(()=>{
     const onClick = (ev)=>{
@@ -38,6 +43,47 @@ export default function Home(){
     document.addEventListener('click', onClick)
     return ()=> document.removeEventListener('click', onClick)
   }, [addToCart])
+
+  // Handle product image/title clicks for details page
+  useEffect(()=>{
+    const handleProductClick = (ev)=>{
+      const link = ev.target.closest && ev.target.closest('a[href="/details"]')
+      if(!link) return
+      
+      ev.preventDefault()
+      ev.stopPropagation()
+      
+      const productEl = link.closest('.product__item')
+      if(!productEl) return
+      
+      const nameEl = productEl.querySelector('.product__title')
+      const priceEl = productEl.querySelector('.new__price') || productEl.querySelector('.product__price .new__price')
+      const imageEl = productEl.querySelector('.product__img.default') || productEl.querySelector('img')
+      const categoryEl = productEl.querySelector('.product__category')
+      const hoverImageEl = productEl.querySelector('.product__img.hover')
+      
+      const product = {
+        name: nameEl ? nameEl.textContent.trim() : 'Product',
+        price: priceEl ? priceEl.textContent.replace('$','').trim() : '0',
+        image: imageEl ? imageEl.getAttribute('src') : '',
+        image1: imageEl ? imageEl.getAttribute('src') : '',
+        image2: hoverImageEl ? hoverImageEl.getAttribute('src') : (imageEl ? imageEl.getAttribute('src') : ''),
+        category: categoryEl ? categoryEl.textContent.trim() : 'Clothing',
+        brand: 'Brand',
+        description: 'Premium quality product',
+        rating: 5,
+        stock: 8,
+        sku: 'SKU-001',
+        tags: 'Clothing, Fashion'
+      }
+      
+      setSelectedProduct(product)
+      navigate('/details')
+    }
+    
+    document.addEventListener('click', handleProductClick)
+    return ()=> document.removeEventListener('click', handleProductClick)
+  }, [setSelectedProduct, navigate])
   useEffect(()=>{
     // Init swiper carousels
     function initSwipers(){
@@ -227,7 +273,7 @@ export default function Home(){
             <div className="products__container grid">
               <div className="product__item">
                 <div className="product__banner">
-                  <a href="details.html" className="product__images">
+                  <a href="/details" className="product__images">
                     <img
                       src="assets/img/product-1-1.jpg"
                       alt=""
@@ -280,7 +326,7 @@ export default function Home(){
                 </div>
                 <div className="product__content">
                   <span className="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 className="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -305,7 +351,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-2-1.jpg"
                       alt=""
@@ -336,7 +382,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -361,7 +407,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-3-1.jpg"
                       alt=""
@@ -392,7 +438,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -417,7 +463,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-4-1.jpg"
                       alt=""
@@ -448,7 +494,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -473,7 +519,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-5-1.jpg"
                       alt=""
@@ -504,7 +550,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -529,7 +575,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-6-1.jpg"
                       alt=""
@@ -560,7 +606,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -585,7 +631,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-7-1.jpg"
                       alt=""
@@ -616,7 +662,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -641,7 +687,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-8-1.jpg"
                       alt=""
@@ -671,7 +717,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -700,7 +746,7 @@ export default function Home(){
             <div class="products__container grid">
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-9-1.jpg"
                       alt=""
@@ -731,7 +777,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -756,7 +802,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-2-1.jpg"
                       alt=""
@@ -787,7 +833,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -812,7 +858,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-10-1.jpg"
                       alt=""
@@ -843,7 +889,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -868,7 +914,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-4-1.jpg"
                       alt=""
@@ -899,7 +945,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -924,7 +970,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-5-1.jpg"
                       alt=""
@@ -955,7 +1001,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -980,7 +1026,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-11-1.jpg"
                       alt=""
@@ -1011,7 +1057,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -1036,7 +1082,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-7-1.jpg"
                       alt=""
@@ -1067,7 +1113,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -1092,7 +1138,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-8-1.jpg"
                       alt=""
@@ -1122,7 +1168,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -1151,7 +1197,7 @@ export default function Home(){
             <div class="products__container grid">
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-1-1.jpg"
                       alt=""
@@ -1182,7 +1228,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -1207,7 +1253,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-12-1.jpg"
                       alt=""
@@ -1238,7 +1284,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -1263,7 +1309,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-13-1.jpg"
                       alt=""
@@ -1294,7 +1340,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -1319,7 +1365,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-4-1.jpg"
                       alt=""
@@ -1350,7 +1396,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -1375,7 +1421,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-10-1.jpg"
                       alt=""
@@ -1406,7 +1452,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -1431,7 +1477,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-6-1.jpg"
                       alt=""
@@ -1462,7 +1508,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -1487,7 +1533,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-9-1.jpg"
                       alt=""
@@ -1518,7 +1564,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -1543,7 +1589,7 @@ export default function Home(){
               </div>
               <div class="product__item">
                 <div class="product__banner">
-                  <a href="details.html" class="product__images">
+                  <a href="/details" class="product__images">
                     <img
                       src="assets/img/product-8-1.jpg"
                       alt=""
@@ -1573,7 +1619,7 @@ export default function Home(){
                 </div>
                 <div class="product__content">
                   <span class="product__category">Clothing</span>
-                  <a href="details.html">
+                  <a href="/details">
                     <h3 class="product__title">Colorful Pattern Shirts</h3>
                   </a>
                   <div class="product__rating">
@@ -1635,7 +1681,7 @@ export default function Home(){
               </div>
             </div>
             <div class="deals__btn">
-              <a href="details.html" class="btn btn--md">Shop Now</a>
+              <a href="/details" class="btn btn--md">Shop Now</a>
             </div>
           </div>
           <div class="deals__item">
@@ -1670,7 +1716,7 @@ export default function Home(){
               </div>
             </div>
             <div class="deals__btn">
-              <a href="details.html" class="btn btn--md">Shop Now</a>
+              <a href="/details" class="btn btn--md">Shop Now</a>
             </div>
           </div>
         </div>
@@ -1683,7 +1729,7 @@ export default function Home(){
           <div class="swiper-wrapper">
             <div class="product__item swiper-slide">
               <div class="product__banner">
-                <a href="details.html" class="product__images">
+                <a href="/details" class="product__images">
                   <img
                     src="assets/img/product-1-1.jpg"
                     alt=""
@@ -1710,7 +1756,7 @@ export default function Home(){
               </div>
               <div class="product__content">
                 <span class="product__category">Clothing</span>
-                <a href="details.html">
+                <a href="/details">
                   <h3 class="product__title">Colorful Pattern Shirts</h3>
                 </a>
                 <div class="product__rating">
@@ -1735,7 +1781,7 @@ export default function Home(){
             </div>
             <div class="product__item swiper-slide">
               <div class="product__banner">
-                <a href="details.html" class="product__images">
+                <a href="/details" class="product__images">
                   <img
                     src="assets/img/product-2-1.jpg"
                     alt=""
@@ -1762,7 +1808,7 @@ export default function Home(){
               </div>
               <div class="product__content">
                 <span class="product__category">Clothing</span>
-                <a href="details.html">
+                <a href="/details">
                   <h3 class="product__title">Colorful Pattern Shirts</h3>
                 </a>
                 <div class="product__rating">
@@ -1787,7 +1833,7 @@ export default function Home(){
             </div>
             <div class="product__item swiper-slide">
               <div class="product__banner">
-                <a href="details.html" class="product__images">
+                <a href="/details" class="product__images">
                   <img
                     src="assets/img/product-3-1.jpg"
                     alt=""
@@ -1814,7 +1860,7 @@ export default function Home(){
               </div>
               <div class="product__content">
                 <span class="product__category">Clothing</span>
-                <a href="details.html">
+                <a href="/details">
                   <h3 class="product__title">Colorful Pattern Shirts</h3>
                 </a>
                 <div class="product__rating">
@@ -1839,7 +1885,7 @@ export default function Home(){
             </div>
             <div class="product__item swiper-slide">
               <div class="product__banner">
-                <a href="details.html" class="product__images">
+                <a href="/details" class="product__images">
                   <img
                     src="assets/img/product-4-1.jpg"
                     alt=""
@@ -1866,7 +1912,7 @@ export default function Home(){
               </div>
               <div class="product__content">
                 <span class="product__category">Clothing</span>
-                <a href="details.html">
+                <a href="/details">
                   <h3 class="product__title">Colorful Pattern Shirts</h3>
                 </a>
                 <div class="product__rating">
@@ -1891,7 +1937,7 @@ export default function Home(){
             </div>
             <div class="product__item swiper-slide">
               <div class="product__banner">
-                <a href="details.html" class="product__images">
+                <a href="/details" class="product__images">
                   <img
                     src="assets/img/product-5-1.jpg"
                     alt=""
@@ -1918,7 +1964,7 @@ export default function Home(){
               </div>
               <div class="product__content">
                 <span class="product__category">Clothing</span>
-                <a href="details.html">
+                <a href="/details">
                   <h3 class="product__title">Colorful Pattern Shirts</h3>
                 </a>
                 <div class="product__rating">
@@ -1943,7 +1989,7 @@ export default function Home(){
             </div>
             <div class="product__item swiper-slide">
               <div class="product__banner">
-                <a href="details.html" class="product__images">
+                <a href="/details" class="product__images">
                   <img
                     src="assets/img/product-6-1.jpg"
                     alt=""
@@ -1970,7 +2016,7 @@ export default function Home(){
               </div>
               <div class="product__content">
                 <span class="product__category">Clothing</span>
-                <a href="details.html">
+                <a href="/details">
                   <h3 class="product__title">Colorful Pattern Shirts</h3>
                 </a>
                 <div class="product__rating">
@@ -1995,7 +2041,7 @@ export default function Home(){
             </div>
             <div class="product__item swiper-slide">
               <div class="product__banner">
-                <a href="details.html" class="product__images">
+                <a href="/details" class="product__images">
                   <img
                     src="assets/img/product-7-1.jpg"
                     alt=""
@@ -2022,7 +2068,7 @@ export default function Home(){
               </div>
               <div class="product__content">
                 <span class="product__category">Clothing</span>
-                <a href="details.html">
+                <a href="/details">
                   <h3 class="product__title">Colorful Pattern Shirts</h3>
                 </a>
                 <div class="product__rating">
@@ -2061,7 +2107,7 @@ export default function Home(){
           <div class="showcase__wrapper">
             <h3 class="section__title">Hot Releases</h3>
             <div class="showcase__item">
-              <a href="details.html" class="showcase__img-box">
+              <a href="/details" class="showcase__img-box">
                 <img
                   src="./assets/img/showcase-img-1.jpg"
                   alt=""
@@ -2069,7 +2115,7 @@ export default function Home(){
                 />
               </a>
               <div class="showcase__content">
-                <a href="details.html">
+                <a href="/details">
                   <h4 class="showcase__title">
                     Floral Print Casual Cotton Dress
                   </h4>
@@ -2081,7 +2127,7 @@ export default function Home(){
               </div>
             </div>
             <div class="showcase__item">
-              <a href="details.html" class="showcase__img-box">
+              <a href="/details" class="showcase__img-box">
                 <img
                   src="./assets/img/showcase-img-2.jpg"
                   alt=""
@@ -2089,7 +2135,7 @@ export default function Home(){
                 />
               </a>
               <div class="showcase__content">
-                <a href="details.html">
+                <a href="/details">
                   <h4 class="showcase__title">
                     Ruffled Solid Long Sleeve Blouse
                   </h4>
@@ -2101,7 +2147,7 @@ export default function Home(){
               </div>
             </div>
             <div class="showcase__item">
-              <a href="details.html" class="showcase__img-box">
+              <a href="/details" class="showcase__img-box">
                 <img
                   src="./assets/img/showcase-img-3.jpg"
                   alt=""
@@ -2109,7 +2155,7 @@ export default function Home(){
                 />
               </a>
               <div class="showcase__content">
-                <a href="details.html">
+                <a href="/details">
                   <h4 class="showcase__title">
                     Multi-Color Print V-neck T-shirt
                   </h4>
@@ -2124,7 +2170,7 @@ export default function Home(){
           <div class="showcase__wrapper">
             <h3 class="section__title">Deals & Outlet</h3>
             <div class="showcase__item">
-              <a href="details.html" class="showcase__img-box">
+              <a href="/details" class="showcase__img-box">
                 <img
                   src="./assets/img/showcase-img-4.jpg"
                   alt=""
@@ -2132,7 +2178,7 @@ export default function Home(){
                 />
               </a>
               <div class="showcase__content">
-                <a href="details.html">
+                <a href="/details">
                   <h4 class="showcase__title">Fish Print Patched T-shirt</h4>
                 </a>
                 <div class="showcase__price flex">
@@ -2142,7 +2188,7 @@ export default function Home(){
               </div>
             </div>
             <div class="showcase__item">
-              <a href="details.html" class="showcase__img-box">
+              <a href="/details" class="showcase__img-box">
                 <img
                   src="./assets/img/showcase-img-5.jpg"
                   alt=""
@@ -2150,7 +2196,7 @@ export default function Home(){
                 />
               </a>
               <div class="showcase__content">
-                <a href="details.html">
+                <a href="/details">
                   <h4 class="showcase__title">Fintage Floral Print Dress</h4>
                 </a>
                 <div class="showcase__price flex">
@@ -2160,7 +2206,7 @@ export default function Home(){
               </div>
             </div>
             <div class="showcase__item">
-              <a href="details.html" class="showcase__img-box">
+              <a href="/details" class="showcase__img-box">
                 <img
                   src="./assets/img/showcase-img-6.jpg"
                   alt=""
@@ -2168,7 +2214,7 @@ export default function Home(){
                 />
               </a>
               <div class="showcase__content">
-                <a href="details.html">
+                <a href="/details">
                   <h4 class="showcase__title">
                     Multi-Color Stripe Circle T-shirt
                   </h4>
@@ -2183,7 +2229,7 @@ export default function Home(){
           <div class="showcase__wrapper">
             <h3 class="section__title">Top Selling</h3>
             <div class="showcase__item">
-              <a href="details.html" class="showcase__img-box">
+              <a href="/details" class="showcase__img-box">
                 <img
                   src="./assets/img/showcase-img-7.jpg"
                   alt=""
@@ -2191,7 +2237,7 @@ export default function Home(){
                 />
               </a>
               <div class="showcase__content">
-                <a href="details.html">
+                <a href="/details">
                   <h4 class="showcase__title">
                     Geometric Printed Long Sleeve Blouse
                   </h4>
@@ -2203,7 +2249,7 @@ export default function Home(){
               </div>
             </div>
             <div class="showcase__item">
-              <a href="details.html" class="showcase__img-box">
+              <a href="/details" class="showcase__img-box">
                 <img
                   src="./assets/img/showcase-img-8.jpg"
                   alt=""
@@ -2211,7 +2257,7 @@ export default function Home(){
                 />
               </a>
               <div class="showcase__content">
-                <a href="details.html">
+                <a href="/details">
                   <h4 class="showcase__title">Print Patchwork Maxi Dress</h4>
                 </a>
                 <div class="showcase__price flex">
@@ -2221,7 +2267,7 @@ export default function Home(){
               </div>
             </div>
             <div class="showcase__item">
-              <a href="details.html" class="showcase__img-box">
+              <a href="/details" class="showcase__img-box">
                 <img
                   src="./assets/img/showcase-img-9.jpg"
                   alt=""
@@ -2229,7 +2275,7 @@ export default function Home(){
                 />
               </a>
               <div class="showcase__content">
-                <a href="details.html">
+                <a href="/details">
                   <h4 class="showcase__title">
                     Daisy Floral Print Straps Jumpsuit
                   </h4>
@@ -2244,7 +2290,7 @@ export default function Home(){
           <div class="showcase__wrapper">
             <h3 class="section__title">Trendy</h3>
             <div class="showcase__item">
-              <a href="details.html" class="showcase__img-box">
+              <a href="/details" class="showcase__img-box">
                 <img
                   src="./assets/img/showcase-img-7.jpg"
                   alt=""
@@ -2252,7 +2298,7 @@ export default function Home(){
                 />
               </a>
               <div class="showcase__content">
-                <a href="details.html">
+                <a href="/details">
                   <h4 class="showcase__title">Floral Print Casual Cotton</h4>
                 </a>
                 <div class="showcase__price flex">
@@ -2262,7 +2308,7 @@ export default function Home(){
               </div>
             </div>
             <div class="showcase__item">
-              <a href="details.html" class="showcase__img-box">
+              <a href="/details" class="showcase__img-box">
                 <img
                   src="./assets/img/showcase-img-8.jpg"
                   alt=""
@@ -2270,7 +2316,7 @@ export default function Home(){
                 />
               </a>
               <div class="showcase__content">
-                <a href="details.html">
+                <a href="/details">
                   <h4 class="showcase__title">Ruffled Solid Long Sleeve</h4>
                 </a>
                 <div class="showcase__price flex">
@@ -2280,7 +2326,7 @@ export default function Home(){
               </div>
             </div>
             <div class="showcase__item">
-              <a href="details.html" class="showcase__img-box">
+              <a href="/details" class="showcase__img-box">
                 <img
                   src="./assets/img/showcase-img-9.jpg"
                   alt=""
@@ -2288,7 +2334,7 @@ export default function Home(){
                 />
               </a>
               <div class="showcase__content">
-                <a href="details.html">
+                <a href="/details">
                   <h4 class="showcase__title">Multi-Color Print V-neck</h4>
                 </a>
                 <div class="showcase__price flex">

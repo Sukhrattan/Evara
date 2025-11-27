@@ -1,9 +1,12 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 
 export default function Cart(){
   const { cartItems, removeFromCart, updateQuantity } = useCart()
   const subtotal = cartItems.reduce((s,i)=> s + (parseFloat(i.price || 0) * (i.quantity || 1)), 0)
+  const navigate = useNavigate()
+
   return (
   <>
 
@@ -56,7 +59,7 @@ export default function Cart(){
         </div>
 
         <div className="cart__actions">
-          <button className="btn flex btn__md" onClick={()=> window.location.href = '/shop'}>
+          <button className="btn flex btn__md" onClick={()=> navigate('/shop')}>
             <i className="fi-rs-shopping-bag"></i> Continue Shopping
           </button>
         </div>

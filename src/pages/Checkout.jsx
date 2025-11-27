@@ -1,13 +1,21 @@
 import React from 'react'
+import { useCart } from '../context/CartContext'
 
 export default function Checkout(){
+  const { cartItems } = useCart()
+  
+  const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.price || 0) * (item.quantity || 1)), 0)
+  const shipping = subtotal > 100 ? 0 : 10
+  const tax = subtotal * 0.1
+  const total = subtotal + shipping + tax
+
   return (
     <>
       <main className="main">
 
       <section className="breadcrumb">
         <ul className="breadcrumb__list flex container">
-          <li><a href="index.html" className="breadcrumb__link">Home</a></li>
+          <li><a href="/" className="breadcrumb__link">Home</a></li>
           <li><span className="breadcrumb__link">&gt;</span></li>
           <li><span className="breadcrumb__link">Shop</span></li>
           <li><span className="breadcrumb__link">&gt;</span></li>
@@ -47,67 +55,55 @@ export default function Checkout(){
               </thead>
 
               <tbody>
-                <tr>
-                  <td>
-                    <img
-                      src="./assets/img/product-1-2.jpg"
-                      alt=""
-                      class="order__img"
-                    />
-                  </td>
-                  <td>
-                    <h3 class="table__title">Yidarton Women Summer Blue</h3>
-                    <p class="table__quantity">x 2</p>
-                  </td>
-                  <td><span class="table__price">$180.00</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <img
-                      src="./assets/img/product-2-1.jpg"
-                      alt=""
-                      class="order__img"
-                    />
-                  </td>
-                  <td>
-                    <h3 class="table__title">LDB Moon Summer</h3>
-                    <p class="table__quantity">x 1</p>
-                  </td>
-                  <td><span class="table__price">$65.00</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <img
-                      src="./assets/img/product-7-1.jpg"
-                      alt=""
-                      class="order__img"
-                    />
-                  </td>
-                  <td>
-                    <h3 class="table__title">Women Short Sleeve Loose</h3>
-                    <p class="table__quantity">x 2</p>
-                  </td>
-                  <td><span class="table__price">$35.00</span></td>
-                </tr>
+                {cartItems.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} style={{ textAlign: 'center', padding: '20px' }}>
+                      Your cart is empty
+                    </td>
+                  </tr>
+                ) : (
+                  cartItems.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>
+                        <img
+                          src={item.image || './assets/img/product-1-2.jpg'}
+                          alt={item.name}
+                          className="order__img"
+                        />
+                      </td>
+                      <td>
+                        <h3 className="table__title">{item.name}</h3>
+                        <p className="table__quantity">x {item.quantity}</p>
+                      </td>
+                      <td><span className="table__price">${(parseFloat(item.price || 0) * (item.quantity || 1)).toFixed(2)}</span></td>
+                    </tr>
+                  ))
+                )}
                 <tr>
                   <td><span className="order__subtitle">Subtotal</span></td>
-                  <td colSpan={2}><span className="table__price">$280.00</span></td>
+                  <td colSpan={2}><span className="table__price">${subtotal.toFixed(2)}</span></td>
                 </tr>
                 <tr>
                   <td><span className="order__subtitle">Shipping</span></td>
                   <td colSpan={2}>
-                    <span className="table__price">Free Shipping</span>
+                    <span className="table__price">{shipping === 0 ? 'Free Shipping' : `$${shipping.toFixed(2)}`}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span className="order__subtitle">Tax</span></td>
+                  <td colSpan={2}>
+                    <span className="table__price">${tax.toFixed(2)}</span>
                   </td>
                 </tr>
                 <tr>
                   <td><span className="order__subtitle">Total</span></td>
                   <td colSpan={2}>
-                    <span className="order__grand-total">$280.00</span>
+                    <span className="order__grand-total">${total.toFixed(2)}</span>
                   </td>
                 </tr>
               </tbody>
             </table>
-            <div class="payment__methods">
+            <div className="payment__methods">
               <h3 className="checkout__title payment__title">Payment</h3>
               <div className="payment__option flex">
                 <input
@@ -138,7 +134,7 @@ export default function Checkout(){
                 <label htmlFor="l3" className="payment__label">Paypal</label>
               </div>
             </div>
-            <button class="btn btn--md">Place Order</button>
+            <button className="btn btn--md">Place Order</button>
           </div>
         </div>
       </section>

@@ -1,6 +1,97 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect} from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useProduct } from '../context/ProductContext'
+import { useCart } from '../context/CartContext'
 
 export default function Shop(){
+  const navigate = useNavigate()
+  const { addToCart } = useCart()
+  const { setSelectedProduct } = useProduct()
+
+  // Handle Add to Cart clicks
+  useEffect(() => {
+    const handleCartClick = (ev) => {
+      const btn = ev.target.closest('.cart__btn')
+      if (!btn) return
+      
+      ev.preventDefault()
+      ev.stopPropagation()
+      
+      const productEl = btn.closest('.product__item')
+      if (!productEl) return
+      
+      const nameEl = productEl.querySelector('.product__title')
+      const priceEl = productEl.querySelector('.new__price')
+      const imgEl = productEl.querySelector('.product__img.default')
+      
+      const product = {
+        name: nameEl?.textContent?.trim() || 'Product',
+        price: priceEl?.textContent?.replace('$', '')?.trim() || '0',
+        image: imgEl?.src || '',
+      }
+      
+      console.log('Adding to cart from shop:', product)
+      addToCart(product)
+      alert('Product added to cart!')
+    }
+    
+    document.addEventListener('click', handleCartClick)
+    
+    return () => {
+      document.removeEventListener('click', handleCartClick)
+    }
+  }, [addToCart])
+
+  useEffect(() => {
+    const stableHandler = (e) => {
+      // Find the product item container
+      const productItem = e.currentTarget.closest?.('.product__item') || e.target.closest('.product__item')
+      if (!productItem) return
+      
+      e.preventDefault()
+      e.stopPropagation()
+      
+      try {
+        // Extract product information from DOM
+        const nameEl = productItem.querySelector('.product__title')
+        const priceEl = productItem.querySelector('.new__price')
+        const imageEl = productItem.querySelector('.product__img.default')
+        const categoryEl = productItem.querySelector('.product__category')
+        const hoverImageEl = productItem.querySelector('.product__img.hover')
+        
+        const product = {
+          name: nameEl?.textContent?.trim() || 'Product',
+          price: priceEl?.textContent?.replace('$', '')?.trim() || '0',
+          image: imageEl?.src || '',
+          image1: imageEl?.src || '',
+          image2: hoverImageEl?.src || imageEl?.src || '',
+          category: categoryEl?.textContent?.trim() || 'Clothing',
+          brand: 'Brand',
+          description: 'Premium quality product',
+          rating: 5,
+          stock: 8,
+          sku: 'SKU-001',
+          tags: 'Clothing, Fashion'
+        }
+        
+        setSelectedProduct(product)
+        navigate('/details')
+      } catch (error) {
+        console.error('Error extracting product data:', error)
+      }
+    }
+    
+    const productLinks = document.querySelectorAll('a[href="/details"]')
+    productLinks.forEach(link => {
+      link.addEventListener('click', stableHandler)
+    })
+    
+    return () => {
+      productLinks.forEach(link => {
+        link.removeEventListener('click', stableHandler)
+      })
+    }
+  }, [navigate, setSelectedProduct])
 
   return (<>  
           <main class="main">
@@ -17,7 +108,7 @@ export default function Shop(){
         <div class="products__container grid">
           <div class="product__item">
             <div class="product__banner">
-              <a href="details.html" class="product__images">
+              <a href="/details" class="product__images">
                 <img
                   src="assets/img/product-1-1.jpg"
                   alt=""
@@ -48,7 +139,7 @@ export default function Shop(){
             </div>
             <div class="product__content">
               <span class="product__category">Clothing</span>
-              <a href="details.html">
+              <a href="/details">
                 <h3 class="product__title">Colorful Pattern Shirts</h3>
               </a>
               <div class="product__rating">
@@ -73,7 +164,7 @@ export default function Shop(){
           </div>
           <div class="product__item">
             <div class="product__banner">
-              <a href="details.html" class="product__images">
+              <a href="/details" class="product__images">
                 <img
                   src="assets/img/product-2-1.jpg"
                   alt=""
@@ -104,7 +195,7 @@ export default function Shop(){
             </div>
             <div class="product__content">
               <span class="product__category">Clothing</span>
-              <a href="details.html">
+              <a href="/details">
                 <h3 class="product__title">Colorful Pattern Shirts</h3>
               </a>
               <div class="product__rating">
@@ -129,7 +220,7 @@ export default function Shop(){
           </div>
           <div class="product__item">
             <div class="product__banner">
-              <a href="details.html" class="product__images">
+              <a href="/details" class="product__images">
                 <img
                   src="assets/img/product-3-1.jpg"
                   alt=""
@@ -160,7 +251,7 @@ export default function Shop(){
             </div>
             <div class="product__content">
               <span class="product__category">Clothing</span>
-              <a href="details.html">
+              <a href="/details">
                 <h3 class="product__title">Colorful Pattern Shirts</h3>
               </a>
               <div class="product__rating">
@@ -185,7 +276,7 @@ export default function Shop(){
           </div>
           <div class="product__item">
             <div class="product__banner">
-              <a href="details.html" class="product__images">
+              <a href="/details" class="product__images">
                 <img
                   src="assets/img/product-4-1.jpg"
                   alt=""
@@ -216,7 +307,7 @@ export default function Shop(){
             </div>
             <div class="product__content">
               <span class="product__category">Clothing</span>
-              <a href="details.html">
+              <a href="/details">
                 <h3 class="product__title">Colorful Pattern Shirts</h3>
               </a>
               <div class="product__rating">
@@ -241,7 +332,7 @@ export default function Shop(){
           </div>
           <div class="product__item">
             <div class="product__banner">
-              <a href="details.html" class="product__images">
+              <a href="/details" class="product__images">
                 <img
                   src="assets/img/product-5-1.jpg"
                   alt=""
@@ -272,7 +363,7 @@ export default function Shop(){
             </div>
             <div class="product__content">
               <span class="product__category">Clothing</span>
-              <a href="details.html">
+              <a href="/details">
                 <h3 class="product__title">Colorful Pattern Shirts</h3>
               </a>
               <div class="product__rating">
@@ -297,7 +388,7 @@ export default function Shop(){
           </div>
           <div class="product__item">
             <div class="product__banner">
-              <a href="details.html" class="product__images">
+              <a href="/details" class="product__images">
                 <img
                   src="assets/img/product-6-1.jpg"
                   alt=""
@@ -328,7 +419,7 @@ export default function Shop(){
             </div>
             <div class="product__content">
               <span class="product__category">Clothing</span>
-              <a href="details.html">
+              <a href="/details">
                 <h3 class="product__title">Colorful Pattern Shirts</h3>
               </a>
               <div class="product__rating">
@@ -353,7 +444,7 @@ export default function Shop(){
           </div>
           <div class="product__item">
             <div class="product__banner">
-              <a href="details.html" class="product__images">
+              <a href="/details" class="product__images">
                 <img
                   src="assets/img/product-7-1.jpg"
                   alt=""
@@ -384,7 +475,7 @@ export default function Shop(){
             </div>
             <div class="product__content">
               <span class="product__category">Clothing</span>
-              <a href="details.html">
+              <a href="/details">
                 <h3 class="product__title">Colorful Pattern Shirts</h3>
               </a>
               <div class="product__rating">
@@ -409,7 +500,7 @@ export default function Shop(){
           </div>
           <div class="product__item">
             <div class="product__banner">
-              <a href="details.html" class="product__images">
+              <a href="/details" class="product__images">
                 <img
                   src="assets/img/product-8-1.jpg"
                   alt=""
@@ -439,7 +530,7 @@ export default function Shop(){
             </div>
             <div class="product__content">
               <span class="product__category">Clothing</span>
-              <a href="details.html">
+              <a href="/details">
                 <h3 class="product__title">Colorful Pattern Shirts</h3>
               </a>
               <div class="product__rating">
@@ -464,7 +555,7 @@ export default function Shop(){
           </div>
           <div class="product__item">
             <div class="product__banner">
-              <a href="details.html" class="product__images">
+              <a href="/details" class="product__images">
                 <img
                   src="assets/img/product-10-1.jpg"
                   alt=""
@@ -495,7 +586,7 @@ export default function Shop(){
             </div>
             <div class="product__content">
               <span class="product__category">Clothing</span>
-              <a href="details.html">
+              <a href="/details">
                 <h3 class="product__title">Colorful Pattern Shirts</h3>
               </a>
               <div class="product__rating">
@@ -520,7 +611,7 @@ export default function Shop(){
           </div>
           <div class="product__item">
             <div class="product__banner">
-              <a href="details.html" class="product__images">
+              <a href="/details" class="product__images">
                 <img
                   src="assets/img/product-11-1.jpg"
                   alt=""
@@ -551,7 +642,7 @@ export default function Shop(){
             </div>
             <div class="product__content">
               <span class="product__category">Clothing</span>
-              <a href="details.html">
+              <a href="/details">
                 <h3 class="product__title">Colorful Pattern Shirts</h3>
               </a>
               <div class="product__rating">
@@ -576,7 +667,7 @@ export default function Shop(){
           </div>
           <div class="product__item">
             <div class="product__banner">
-              <a href="details.html" class="product__images">
+              <a href="/details" class="product__images">
                 <img
                   src="assets/img/product-4-1.jpg"
                   alt=""
@@ -607,7 +698,7 @@ export default function Shop(){
             </div>
             <div class="product__content">
               <span class="product__category">Clothing</span>
-              <a href="details.html">
+              <a href="/details">
                 <h3 class="product__title">Colorful Pattern Shirts</h3>
               </a>
               <div class="product__rating">
@@ -632,7 +723,7 @@ export default function Shop(){
           </div>
           <div class="product__item">
             <div class="product__banner">
-              <a href="details.html" class="product__images">
+              <a href="/details" class="product__images">
                 <img
                   src="assets/img/product-12-1.jpg"
                   alt=""
@@ -662,7 +753,7 @@ export default function Shop(){
             </div>
             <div class="product__content">
               <span class="product__category">Clothing</span>
-              <a href="details.html">
+              <a href="/details">
                 <h3 class="product__title">Colorful Pattern Shirts</h3>
               </a>
               <div class="product__rating">
