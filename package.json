@@ -13,6 +13,7 @@
     "react-router-dom": "^6.14.1"
   },
   "devDependencies": {
+    "parcel": "^2.16.1",
     "vite": "^5.0.0"
   }
 }
